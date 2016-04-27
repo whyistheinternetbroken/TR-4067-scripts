@@ -1,0 +1,105 @@
+############################################################
+############################################################
+############################################################
+############################################################
+############################################################
+############################################################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+######################                ######################
+
+README: NFS Mount Trace Workaround in Clustered Data ONTAP
+Date: 04/27/2016
+
+This README file is intended to be a guide to the provided NFS mount trace 
+scripts at https://github.com/whyistheinternetbroken/TR-4067-scripts.
+
+The nfs-mountd-enable-debug.sh script will enable debug level statistics
+and logs for the purpose of NFS mount tracing with similar functionality
+to the 7-Mode option nfs.trace.mountd.
+
+The nfs-mountd-disable-debug.sh script will disable debug level statistics
+and logs for the purpose of turning off NFS mount tracing.
+
+The full explanation and walkthrough of this process will be covered in 
+TR-4067 (http://www.netapp.com/us/media/tr-4067.pdf) in the next major release 
+of NetApp clustered Data ONTAP.
+
+These scripts are unsupported and are delivered as-is. Any questions 
+or updates should be directed via the GitHub repository for review and approval.
+
+Scripts were tested on clustered Data ONTAP 8.3.x and later.
+
+This README is a summary of the functions and their purposes.
+
+#################################################
+nfs-mountd-enable-debug.sh functions
+#################################################
+
+ConfirmEnableSysctl: Runs a confirmation with user input needed to ensure
+the user really does want to enable the sysctl variables for debug logging.
+
+ConfirmEnableMGWDDebug: Runs a confirmation with user input needed to ensure
+the user really does want to enable the mgwd debug logging.
+
+ConfirmEnableStats: Runs a confirmation with user input needed to ensure
+the user really does want to enable the mount trace statistics, as well
+as enabling the stats.
+
+EnableSktrace: Enables debug level logging via sysctl at the SK level. 
+This is a set of diag privilege commands that require cluster admin rights. 
+After debugging is done, these variables should be reset to their default values.
+
+EnableMGWDdebug: Enables MGWD Debug logging. MGWD is used to evaluate NFS export
+policies and rules. This is a set of diag privilege commands that require 
+cluster admin rights. After debugging is done, reset to the default values.
+
+#################################################
+nfs-mountd-disable-debug.sh functions
+#################################################
+
+ConfirmDisableSysctl: Runs a confirmation with user input needed to ensure
+the user really does want to disable the sysctl variables for debug logging.
+
+ConfirmDisableMGWDDebug: Runs a confirmation with user input needed to ensure
+the user really does want to disable the mgwd debug logging.
+
+ConfirmDisableStats: Runs a confirmation with user input needed to ensure
+the user really does want to disable the mount trace statistics, as well
+as disabling the stats.
+
+DisableSktrace: Disables debug level logging via sysctl at the SK level. 
+This is a set of diag privilege commands that require cluster admin rights. 
+
+DisableMGWDdebug: Disables MGWD Debug logging. MGWD is used to evaluate NFS export
+policies and rules. This is a set of diag privilege commands that require 
+cluster admin rights. 
+
+#################################################
+Default values for the variables
+#################################################
+
+sysvar.sktrace.AccessCacheDebug_enable=0
+sysvar.sktrace.NfsPathResolutionDebug_enable=0
+sysvar.sktrace.NfsDebug_enable=0
+sysvar.sktrace.MntDebug_enable=0
+sysvar.sktrace.Nfs3ProcDebug_enable=0
+
+cluster::*> logger mgwd log show -module mgwd::exports
+Node      Module                                   Level
+--------- ---------------------------------------- ----------
+node-01
+          mgwd::exports                            err
+node-02
+          mgwd::exports                            err
